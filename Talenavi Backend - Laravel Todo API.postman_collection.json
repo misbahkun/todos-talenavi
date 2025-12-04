@@ -1,0 +1,198 @@
+{
+	"info": {
+		"_postman_id": "c590ef6e-314b-4e20-a81f-068eb24d5f32",
+		"name": "Talenavi Backend - Laravel Todo API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27168336"
+	},
+	"item": [
+		{
+			"name": "Create Todo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Implement Todo API\",\n  \"assignee\": \"Misbahudin\",\n  \"due_date\": \"2025-12-31\",\n  \"time_tracked\": 0,\n  \"status\": \"pending\",\n  \"priority\": \"high\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/todos",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"todos"
+					]
+				},
+				"description": "Create a new Todo item.\n\nFields:\n- title (required)\n- assignee (optional)\n- due_date (required, YYYY-MM-DD)\n- time_tracked (numeric, default 0)\n- status (optional: pending|open|in_progress|completed, default pending)\n- priority (required: low|medium|high)"
+			},
+			"response": []
+		},
+		{
+			"name": "Export Todos (Excel)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/todos/export?title=Implement&assignee=Janichan&start=2025-01-01&end=2025-12-31&min=0&max=100&status=pending,in_progress&priority=low,high",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"todos",
+						"export"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "Implement"
+						},
+						{
+							"key": "assignee",
+							"value": "Janichan"
+						},
+						{
+							"key": "start",
+							"value": "2025-01-01"
+						},
+						{
+							"key": "end",
+							"value": "2025-12-31"
+						},
+						{
+							"key": "min",
+							"value": "0"
+						},
+						{
+							"key": "max",
+							"value": "100"
+						},
+						{
+							"key": "status",
+							"value": "pending,in_progress"
+						},
+						{
+							"key": "priority",
+							"value": "low,high"
+						}
+					]
+				},
+				"description": "Export filtered Todo list into Excel file.\nThe response should be an .xlsx file containing todos and summary row at the bottom."
+			},
+			"response": []
+		},
+		{
+			"name": "Chart - Status Summary",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/chart?type=status",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"chart"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "status"
+						}
+					]
+				},
+				"description": "Get summary of todos grouped by status.\n\nExpected JSON:\n{\n  \"status_summary\": {\n    \"pending\": 2,\n    \"open\": 1,\n    \"in_progress\": 3,\n    \"completed\": 5\n  }\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "Chart - Priority Summary",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/chart?type=priority",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"chart"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "priority"
+						}
+					]
+				},
+				"description": "Get summary of todos grouped by priority.\n\nExpected JSON:\n{\n  \"priority_summary\": {\n    \"low\": 1,\n    \"medium\": 4,\n    \"high\": 2\n  }\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "Chart - Assignee Summary",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/chart?type=assignee",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"chart"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "assignee"
+						}
+					]
+				},
+				"description": "Get summary of todos grouped by assignee.\n\nExpected JSON (example):\n{\n  \"assignee_summary\": {\n    \"Misbahudin\": {\n      \"total_todos\": 3,\n      \"total_pending_todos\": 1,\n      \"total_timetracked_completed_todos\": 5.5\n    },\n    \"John Doe\": {\n      \"total_todos\": 2,\n      \"total_pending_todos\": 0,\n      \"total_timetracked_completed_todos\": 3\n    }\n  }\n}"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}
