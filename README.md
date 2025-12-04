@@ -1,59 +1,208 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Todo List API - Talenavi
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+REST API untuk manajemen todo list dengan fitur export Excel dan tracking waktu.
 
-## About Laravel
+## 📋 Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   ✅ **CRUD Todo**: Create, Read, Update, Delete todo items
+-   📊 **Export Excel**: Export todo list dengan filter yang dapat disesuaikan
+-   ⏱️ **Time Tracking**: Lacak waktu yang dihabiskan untuk setiap todo
+-   🔍 **Advanced Filtering**: Filter berdasarkan:
+    -   Title (partial match)
+    -   Assignee (multiple)
+    -   Due Date (range)
+    -   Time Tracked (range)
+    -   Status (pending, open, in_progress, completed)
+    -   Priority (low, medium, high)
+-   📈 **Summary Statistics**: Total todos dan total time tracked dalam export
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   **Framework**: Laravel 12
+-   **Database**: MySQL
+-   **Export**: Maatwebsite Excel
+-   **ORM**: Eloquent
+-   **Build Tool**: Vite
 
-## Learning Laravel
+## 📦 Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Prerequisites
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+-   PHP 8.2+
+-   Composer
+-   Node.js & npm
 
-## Laravel Sponsors
+### Setup
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. **Clone repository**
 
-### Premium Partners
+```bash
+git clone git@github.com:misbahkun/todos-talenavi.git
+cd todos-talenavi
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+2. **Install PHP dependencies**
 
-## Contributing
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3. **Install Node dependencies**
 
-## Code of Conduct
+```bash
+npm install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. **Setup environment**
 
-## Security Vulnerabilities
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5. **Run migrations**
 
-## License
+```bash
+php artisan migrate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+6. **Start development server**
+
+```bash
+composer run dev
+```
+
+Server akan berjalan di `http://localhost:8000`
+
+## 📚 API Endpoints
+
+### Create Todo
+
+```
+POST /api/todos
+```
+
+**Request Body:**
+
+```json
+{
+    "title": "Implement Todo API",
+    "assignee": "Misbahudin",
+    "due_date": "2025-12-31",
+    "time_tracked": 0,
+    "status": "pending",
+    "priority": "high"
+}
+```
+
+**Response:** 201 Created
+
+```json
+{
+    "message": "Todo created successfully",
+    "data": {
+        "id": 1,
+        "title": "Implement Todo API",
+        "assignee": "Misbahudin",
+        "due_date": "2025-12-31",
+        "time_tracked": "0",
+        "status": "pending",
+        "priority": "high",
+        "created_at": "2025-12-05T10:30:00Z",
+        "updated_at": "2025-12-05T10:30:00Z"
+    }
+}
+```
+
+### Export Todos to Excel
+
+```
+GET /api/todos/export
+```
+
+**Query Parameters (optional):**
+
+-   `title`: Partial match (e.g., `?title=Implement`)
+-   `assignee`: Multiple comma-separated (e.g., `?assignee=John,Doe`)
+-   `start`: Due date start (e.g., `?start=2025-01-01`)
+-   `end`: Due date end (e.g., `?end=2025-12-31`)
+-   `min`: Min time tracked (e.g., `?min=0`)
+-   `max`: Max time tracked (e.g., `?max=100`)
+-   `status`: Multiple comma-separated (e.g., `?status=pending,in_progress`)
+-   `priority`: Multiple comma-separated (e.g., `?priority=high,medium`)
+
+**Response:** 200 OK
+
+```json
+{
+    "message": "Excel generated and stored successfully",
+    "file_name": "todos_20251205_103000.xlsx",
+    "file_url": "http://localhost:8000/storage/exports/todos_20251205_103000.xlsx"
+}
+```
+
+**Excel Output:**
+
+-   Columns: Title, Assignee, Due Date, Time Tracked, Status, Priority
+-   Summary rows at bottom:
+    -   TOTAL
+    -   todos: {count}
+    -   time tracked: {sum}
+
+## 🗄️ Database Schema
+
+### Todos Table
+
+```sql
+CREATE TABLE todos (
+  id BIGINT PRIMARY KEY,
+  title VARCHAR(255),
+  assignee VARCHAR(255) NULLABLE,
+  due_date DATE,
+  time_tracked INTEGER DEFAULT 0,
+  status ENUM('pending', 'open', 'in_progress', 'completed') DEFAULT 'pending',
+  priority ENUM('low', 'medium', 'high'),
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP
+);
+```
+
+## 📂 Project Structure
+
+```
+├── app/
+│   ├── Exports/
+│   │   └── TodosExport.php          # Excel export class
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   └── TodoController.php   # Todo API controller
+│   │   └── Requests/
+│   │       └── StoreTodoRequest.php # Request validation
+│   └── Models/
+│       └── Todo.php                 # Todo model
+├── database/
+│   ├── migrations/
+│   │   └── 2025_12_04_213343_create_todos_table.php
+│   └── seeders/
+├── routes/
+│   ├── api.php                      # API routes
+│   └── web.php
+├── storage/
+│   └── app/
+│       └── public/
+│           └── exports/             # Exported Excel files
+└── composer.json
+```
+
+## 📝 Notes
+
+-   Default nilai `time_tracked` adalah 0 jika tidak dikirim
+-   Default nilai `status` adalah `pending` jika tidak dikirim
+-   Export file disimpan di `storage/app/public/exports/`
+-   File dapat diakses via browser di `/storage/exports/{filename}`
+
+
+
+## 👤 Author
+
+Misbahudin - Talenavi Project
