@@ -79,7 +79,7 @@ Server akan berjalan di `http://localhost:8000`
 ### Create Todo
 
 ```
-POST /api/todos
+POST /api/v1/todos
 ```
 
 **Request Body:**
@@ -117,7 +117,7 @@ POST /api/todos
 ### Export Todos to Excel
 
 ```
-GET /api/todos/export
+GET /api/v1/todos/export
 ```
 
 **Query Parameters (optional):**
